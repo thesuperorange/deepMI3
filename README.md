@@ -14,7 +14,7 @@ https://scidm.nchc.org.tw/dataset/mi3
 ## fusion
 
 ## Authorship
-Author: Peggy Lu
+* Author: Peggy Lu
 ## Citation
 
 * C.-H. Chan, H.-T. Chen, W.-C. Teng, C.-W. Liu, J.-H. Chuang, "MI3: Multi-Intensity Infrared Illumination Video Database," IEEE Int'l Conf. on Visual Communications and Image Processing (VCIP), Singapore, Singapore, Dec. 13-16, 2015.
