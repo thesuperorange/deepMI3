@@ -1,13 +1,21 @@
 # deepMI3
 
 ## Data preparation
-* old data
+* original data
 https://sites.google.com/site/miirsurveillance/
 * dataset & groundtruths
 https://scidm.nchc.org.tw/dataset/mi3
 
 
 ## Object detection
+
+* pretrained model
+| detector  | backbone | dataset |
+| ------------- | ------------- |
+| SSD  |  | MobileNetv2 | COCO |
+| YOLOv3  | Darknet  | COCO |
+| faster R-CNN | Res-101 | COCO |
+| mask R-CNN | Res-101 | COCO |
 
 ## face tracking
 
