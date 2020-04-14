@@ -2,6 +2,11 @@ faster-RCNN/data/*
 faster-RCNN/output/*
 faster-RCNN/model/*
 data/*
+
+object_detection/SSD_model
+object_detection/mask-rcnn-coco
+object_detection/yolo-model
+
 # READ THIS BEFORE YOU REFACTOR ME
 #
 # setup.py uses the list of patterns in this file to decide
