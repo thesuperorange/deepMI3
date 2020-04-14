@@ -12,7 +12,7 @@ https://scidm.nchc.org.tw/dataset/mi3
 * pretrained model
 
 | detector  | backbone | dataset |
-| ------------- | ------------- |
+| ------------- | ------------- | ------------- |
 | SSD  |  | MobileNetv2 | COCO |
 | YOLOv3  | Darknet  | COCO |
 | faster R-CNN | Res-101 | COCO |
