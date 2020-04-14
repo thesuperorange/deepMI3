@@ -1,6 +1,8 @@
 from __future__ import absolute_import
+import torch
+import numpy as np
 from ._ext import nms
-
+import pdb
 
 def nms_gpu(dets, thresh):
 	keep = dets.new(dets.size(0), 1).zero_().int()

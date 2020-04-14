@@ -100,7 +100,7 @@ class COCOeval:
                 if type(obj['segmentation']) == list:
                     if type(obj['segmentation'][0]) == dict:
                         print('debug')
-                    obj['segmentation'] = mask.frPyObjects(obj['segmentation'], t['height'], t['width'])
+                    obj['segmentation'] = mask.frPyObjects(obj['segmentation'],t['height'],t['width'])
                     if len(obj['segmentation']) == 1:
                         obj['segmentation'] = obj['segmentation'][0]
                     else:
@@ -108,7 +108,7 @@ class COCOeval:
                         # merge them into one RLE mask
                         obj['segmentation'] = mask.merge(obj['segmentation'])
                 elif type(obj['segmentation']) == dict and type(obj['segmentation']['counts']) == list:
-                    obj['segmentation'] = mask.frPyObjects([obj['segmentation']], t['height'], t['width'])[0]
+                    obj['segmentation'] = mask.frPyObjects([obj['segmentation']],t['height'],t['width'])[0]
                 elif type(obj['segmentation']) == dict and \
                      type(obj['segmentation']['counts']) in string_types:
                     pass
@@ -191,7 +191,7 @@ class COCOeval:
 
         # compute iou between each dt and gt region
         iscrowd = [int(o['iscrowd']) for o in gt]
-        ious = mask.iou(d, g, iscrowd)
+        ious = mask.iou(d,g,iscrowd)
         return ious
 
     def evaluateImg(self, imgId, catId, aRng, maxDet):
