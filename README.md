@@ -10,6 +10,7 @@ https://scidm.nchc.org.tw/dataset/mi3
 ## Object detection
 
 * pretrained model
+
 | detector  | backbone | dataset |
 | ------------- | ------------- |
 | SSD  |  | MobileNetv2 | COCO |
