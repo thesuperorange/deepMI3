@@ -1,5 +1,7 @@
+faster-RCNN/data/*
+faster-RCNN/output/*
+faster-RCNN/model/*
 data/*
-output/*
 # READ THIS BEFORE YOU REFACTOR ME
 #
 # setup.py uses the list of patterns in this file to decide
@@ -22,48 +24,8 @@ output/*
 */**/**/*.pyc
 */**/**/**/*.pyc
 */**/**/**/**/*.pyc
-aten/build/
-aten/src/ATen/Config.h
-aten/src/ATen/cuda/CUDAConfig.h
 build/
 dist/
-docs/src/**/*
-test/.coverage
-test/cpp/api/mnist
-test/data/gpu_tensors.pt
-test/data/legacy_modules.t7
-test/data/legacy_serialized.pt
-test/data/linear.pt
-test/htmlcov
-third_party/build/
-tools/shared/_utils_internal.py
-torch.egg-info/
-torch/csrc/autograd/generated/*
-torch/csrc/cudnn/cuDNN.cpp
-torch/csrc/generated
-torch/csrc/generic/TensorMethods.cpp
-torch/csrc/jit/generated/*
-torch/csrc/nn/THCUNN.cpp
-torch/csrc/nn/THCUNN.cwrap
-torch/csrc/nn/THNN_generic.cpp
-torch/csrc/nn/THNN_generic.cwrap
-torch/csrc/nn/THNN_generic.h
-torch/csrc/nn/THNN.cpp
-torch/csrc/nn/THNN.cwrap
-torch/lib/*.a*
-torch/lib/*.dll*
-torch/lib/*.dylib*
-torch/lib/*.h
-torch/lib/*.lib
-torch/lib/*.so*
-torch/lib/build
-torch/lib/cmake
-torch/lib/include
-torch/lib/pkgconfig
-torch/lib/protoc
-torch/lib/tmp_install
-torch/lib/torch_shm_manager
-torch/version.py
 
 # IPython notebook checkpoints
 .ipynb_checkpoints
