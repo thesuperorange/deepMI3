@@ -13,8 +13,8 @@ https://scidm.nchc.org.tw/dataset/mi3
 
 | detector  | backbone | dataset |
 | ------------- | ------------- | ------------- |
-| SSD  |  | MobileNetv2 | COCO |
-| YOLOv3  | Darknet  | COCO |
+| SSD | MobileNetv2 | COCO |
+| YOLOv3 | Darknet  | COCO |
 | faster R-CNN | Res-101 | COCO |
 | mask R-CNN | Res-101 | COCO |
 
