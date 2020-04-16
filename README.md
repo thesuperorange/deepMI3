@@ -18,6 +18,8 @@ https://scidm.nchc.org.tw/dataset/mi3
 | faster R-CNN | Res-101 | COCO |
 | mask R-CNN | Res-101 | COCO |
 
+> running detail please see README.md in subfolder
+
 ## face tracking
 
 * Pathway1 
