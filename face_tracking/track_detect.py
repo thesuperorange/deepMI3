@@ -354,6 +354,9 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--frame_num', default=548, help='total frame')
     parser.add_argument('-s', '--savefig', action='store_true')
 
+    parser.add_argument('-i', '--input_path', required=True, help='input image folder')
+    parser.add_argument('-o', '--output_path', required=True, help='output folder')
+
 
     args = parser.parse_args()
 
@@ -367,9 +370,9 @@ if __name__ == '__main__':
     #bbox file from detector
     filename = method + "_" + dataset + ".txt"
     #source image
-    input_path = '/home/waue0920/'+dataset+'/ORIG/ch'+str(channel)
+    input_path =  args.input_path  #'/home/waue0920/'+dataset+'/ORIG/ch'+str(channel)
     #output image with bbox
-    output_folder = method + "_" + dataset + "_ch" + str(channel) + "_results"
+    output_folder = args.output_path  #method + "_" + dataset + "_ch" + str(channel) + "_results"
 
     frameBBoxList = readFrameBBoxList(frame_num,filename,channel)
     MDNET = MDTrack(frame_num,input_path,tracklet_num,frameBBoxList)
