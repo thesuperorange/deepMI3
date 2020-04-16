@@ -25,9 +25,10 @@ python demoRGB.py  --net vgg16 --checksession 1 --checkepoch 20 --checkpoint 76 
 ```
 
 ## demo
-![](img/Bus_2_ch2_00437.jpg =100x20)
-![](img/Bus_2_ch4_00435.jpg)
-![](img/Bus_2_ch6_00437.jpg)
+<img src="img/Bus_2_ch2_00437.jpg" height="200px"  >
+<img src="img/Bus_2_ch4_00435.jpg" height="200px"  >
+<img src="img/Bus_2_ch6_00437.jpg" height="200px"  >
+
 
 ## Authorshihp
 * original project: https://github.com/jwyang/faster-rcnn.pytorch
