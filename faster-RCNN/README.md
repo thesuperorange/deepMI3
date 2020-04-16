@@ -25,10 +25,19 @@ python demoRGB.py  --net vgg16 --checksession 1 --checkepoch 20 --checkpoint 76 
 ```
 
 ## demo
-<img src="img/Bus_2_ch2_00437.jpg" height="200px"  >
-<img src="img/Bus_2_ch4_00435.jpg" height="200px"  >
-<img src="img/Bus_2_ch6_00437.jpg" height="200px"  >
 
+### object
+* Bus
+<img src="img/merge_bus.jpg">
+* Staircase
+<img src="img/merge_staircase.jpg">
+* Room
+<img src="img/merge_room.jpg">
+### face
+* Pathway2_3
+<img src="img/face_output_00419.png">
+<br>
+<img src="img/face_output_00483.png">
 
 ## Authorshihp
 * original project: https://github.com/jwyang/faster-rcnn.pytorch
