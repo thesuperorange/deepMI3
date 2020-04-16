@@ -49,14 +49,18 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dataset',  default='Pathway1_1', help='dataset')
     parser.add_argument('-e', '--ext', default = 'png',help='bmp,png,jpg')
 
+    parser.add_argument('-i', '--input_path', required=True, help='input image folder')
+    parser.add_argument('-o', '--output_path', required=True, help='output folder')
+
+
     args = parser.parse_args()
 
     dataset = args.dataset
     method = args.method
     channel = int(args.channel)
     ext = args.ext
-    input_path = '/home/waue0920/'+dataset+'/ORIG/ch'+str(channel)
-    output_folder = method + "_" + dataset + "_ch" + str(channel) + "_results"
+    input_path = args.input_path #'/home/xxxx/'+dataset+'/ORIG/ch'+str(channel)
+    output_folder = args.output_path  #method + "_" + dataset + "_ch" + str(channel) + "_results"
     output_pickle_name = 'track_list_'+method+'_'+dataset+'_ch'+str(channel)+'.pkl'
     file2 = open(output_pickle_name, 'rb')
     bbox_track_list_pickle = pickle.load(file2)
