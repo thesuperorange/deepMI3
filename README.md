@@ -1,51 +1,36 @@
 # deepMI3
 
+
 ## Data preparation
 * original data
 https://sites.google.com/site/miirsurveillance/
 * dataset & groundtruths
 https://scidm.nchc.org.tw/dataset/mi3
 
+## Project content
 
-## Object detection
+### object detection
+* faster R-CNN [link](faster-RCNN/README.md)
+* mask R-CNN [link](object_detection/README.md)
+* SSD [link](object_detection/README.md)
+* YOLO [link](object_detection/README.md)
 
-* pretrained model
+### face tracking
+* MD-Net [link](face_tracking/README.md)
 
-| detector  | backbone | dataset |
-| ------------- | ------------- | ------------- |
-| SSD | MobileNetv2 | COCO |
-| YOLOv3 | Darknet  | COCO |
-| faster R-CNN | Res-101 | COCO |
-| mask R-CNN | Res-101 | COCO |
+### fusion
+* fusion [link](fusion/README.md)
+
+### model evluation
+* Object metrics [link](object_metrics/README.md)
+
+
+### visualization
+* MI3_chart [link](MI3_chart/README.md)
 
 > running detail please see README.md in subfolder
 
-## face tracking
 
-* Pathway1 
-```
-python track_detect.py -s --channel 2 -d Pathway1_1 --method faster-rcnn2  --ext bmp
-
-```
-* Pathway1 face
-```
-python track_detect.py -s --channel 2 -d Pathway1_1 --method faster-rcnn_face9 -i
-
-```
-* draw by pkl
-
-```
-python draw_result.py --channel 2 --method faster-rcnn2 --dataset Pathway1_1 -s
-
-```
-
-* run all
-```
-run_MDnet.sh
-```
-
-
-## fusion
 
 ## Authorship
 * Author: Peggy Lu
