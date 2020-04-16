@@ -29,10 +29,13 @@ python demoRGB.py  --net vgg16 --checksession 1 --checkepoch 20 --checkpoint 76 
 ### object
 * Bus
 <img src="img/merge_bus.jpg">
+
 * Staircase
 <img src="img/merge_staircase.jpg">
+
 * Room
 <img src="img/merge_room.jpg">
+
 ### face
 * Pathway2_3
 <img src="img/face_output_00419.png">
