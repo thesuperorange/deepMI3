@@ -19,10 +19,10 @@ https://scidm.nchc.org.tw/dataset/mi3
 * MD-Net [link](face_tracking/README.md)
 
 ### fusion
-* fusion [link](fusion/README.md)
+* fusion 
 
 ### model evluation
-* Object metrics [link](object_metrics/README.md)
+* model evaluation [link](model_evaluation/README.md)
 
 
 ### visualization
