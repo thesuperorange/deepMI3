@@ -13,11 +13,11 @@ CONFIDENCE_TH = 0.3
 METHOD = 'SSD'
 
 
-def detect(dataset, foldername, filename, ch, mode_img, bbox_log, output_result_folder, output_img_folder):
-    image_num = os.path.splitext(filename)[0]
-    fo2 = open(output_result_folder + '/' + dataset + '_' + image_num + ".txt", "w")
+def detect(foldername,filename, mode_img, bbox_log):
 
-    print(foldername+"/"+filename)
+    file_noext = os.path.splitext(filename)[0]
+    fo2 = open(output_result_folder + '/' +file_noext+ ".txt", "w")
+
     image = cv2.imread(foldername + "/" + filename)
     (h, w) = image.shape[:2]
 #    frame_resized = cv2.resize(image,(300,300))
@@ -57,10 +57,10 @@ def detect(dataset, foldername, filename, ch, mode_img, bbox_log, output_result_
                 )
 
             if bbox_log:
-                fo.write(
-                    str(ch) + "," + image_num + "," + str(startX) + "," + str(startY) + "," +
-                    str(endX) + "," + str(endY) + "," + str(confidence) + "," + class_name + "\n"
-                )
+            #    fo.write(
+            #        str(ch) + "," + image_num + "," + str(startX) + "," + str(startY) + "," +
+            #        str(endX) + "," + str(endY) + "," + str(confidence) + "," + class_name + "\n"
+            #    )
                 fo2.write(class_name + ' ' + str(confidence) + ' ' + str(startX) + ' ' + str(startY) + ' ' + str(
                     endX) + ' ' + str(endY)+'\n')
 
@@ -79,51 +79,50 @@ def detect(dataset, foldername, filename, ch, mode_img, bbox_log, output_result_
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--dataset", required=True, help="input image dataset")
+    ap.add_argument("-d", "--dataset",default='coco', required=True, help="training image dataset")
     ap.add_argument("-i", "--input_path", required=True, help="input image folder")
 
     ap.add_argument('-v', '--visualize', action='store_true',
                     help="whether or not we are going to visualize each instance")
     ap.add_argument('-l', '--savelog', action='store_true', help="whether or not print results in a file")
-#    ap.add_argument('-o', '--output_folder', required=True, help="output results folder")
+    ap.add_argument('-o', '--output_folder', required=True, help="output results folder")
     ap.add_argument('-m', '--model', default=1 ,help="1.coco mobilenet 20180329 2.coco inception 20171117 3.coco mobilenet 20171106 4.pascalvoc mobilenet")
 
 
     args = vars(ap.parse_args())
     model = int(args['model'])
-    dataset = args['dataset']
     vis = args['visualize']
     log = args['savelog']
-    MI3path = args['input_path']
+    input_folder = args['input_path']
 
     class_label_path = 'labels'
-    label_dataset = 'coco'
+    label_dataset = args['dataset']
+    output_folder = 'output/'+args['output_folder']
     #prototxt = 'SSD_model/ssd_mobilenet_v1_coco_2017_11_17.pbtxt'
     #prototxt = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29/saved_model/saved_model.pb'
     #1. tensorflow 20180329
     if model==1:
         prototxt = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29.pbtxt'
         weightsPath = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb'
-        output_folder = 'output/ssd_mobilenet_v2_coco_2018_03_29'
+#        output_folder = 'output/ssd_mobilenet_v2_coco_2018_03_29'
 
     #2. tesorflow 20171117
     elif model==2:
         prototxt = "SSD_model/ssd_inception_v2_coco_2017_11_17.pbtxt"
         weightsPath = 'SSD_model/ssd_inception_v2_coco_2017_11_17/frozen_inference_graph.pb'
-        output_folder = 'output/ssd_inception_v2_coco_2017_11_17'
+#        output_folder = 'output/ssd_inception_v2_coco_2017_11_17'
     #3 tensorflow 11_06_2017
     elif model ==3:
         prototxt = 'SSD_model/ssd_mobilenet_v1_coco.pbtxt'
         weightsPath = 'SSD_model/ssd_mobilenet_v1_coco_11_06_2017/frozen_inference_graph.pb'
-        output_folder = 'output/ssd_mobilenet_v1_coco_2017_11_06'
+#        output_folder = 'output/ssd_mobilenet_v1_coco_2017_11_06'
    #4 Caffe 
     elif model==4:
         prototxt = "SSD_model/MobileNetSSD_deploy.prototxt.txt"
         caffemodel = "SSD_model/MobileNetSSD_deploy.caffemodel"
         #output_folder = 'output/ssd_mobilenet_pascalvoc'
-        output_folder = 'output/ssd_mobilenet_pascalvoc_2'
+#        output_folder = 'output/ssd_mobilenet_pascalvoc_2'
 
-        label_dataset='pascal' 
     # modelConfiguration = "yolov3-tiny.cfg"
     # modelBinary = "yolov3.weights"
 
@@ -145,18 +144,18 @@ if __name__ == '__main__':
     #    dataset = 'Pathway1_1'
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
-    fo = open(output_folder + '/' + method + '_' + dataset + ".txt", "w")
+    #fo = open(output_folder + '/' + method + '_' + dataset + ".txt", "w")
 
-    channel_list = [2, 4, 6]
-    for channel in channel_list:
-        input_folder = os.path.join(MI3path, dataset, "ch" + str(channel))
-        output_result_folder = os.path.join(output_folder, method + '_ch' + str(channel) + '_' + dataset)
-        output_img_folder = os.path.join(output_folder, 'output_images', dataset + '_ch' + str(channel))
-        if not os.path.exists(output_img_folder):
-            os.makedirs(output_img_folder)
-        if not os.path.exists(output_result_folder):
-            os.makedirs(output_result_folder)
+ #   channel_list = [2, 4, 6]
+ #   for channel in channel_list:
+    for filename in os.listdir(input_folder):
+        if filename.endswith(".jpg") or filename.endwith(".png"):
+            output_result_folder = os.path.join(output_folder, 'detect_results')
+            output_img_folder = os.path.join(output_folder, 'output_images')
+            if not os.path.exists(output_img_folder):
+                os.makedirs(output_img_folder)
+            if not os.path.exists(output_result_folder):
+                os.makedirs(output_result_folder)
 
-        for filename in os.listdir(input_folder):
-            detect(dataset, input_folder, filename, channel, vis, log, output_result_folder, output_img_folder)
-    fo.close()
+            detect(input_folder,filename, vis, log)
+    #fo.close()

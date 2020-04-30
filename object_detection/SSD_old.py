@@ -20,11 +20,7 @@ def detect(dataset, foldername, filename, ch, mode_img, bbox_log, output_result_
     print(foldername+"/"+filename)
     image = cv2.imread(foldername + "/" + filename)
     (h, w) = image.shape[:2]
-#    frame_resized = cv2.resize(image,(300,300))
-#    blob = cv2.dnn.blobFromImage(cv2.resize(image,(300,300)), 0.007843, (300, 300), 127.5)
-    blob = cv2.dnn.blobFromImage(image, size=(300, 300), swapRB=True, crop=False)
-#    blob = cv2.dnn.blobFromImage(image, size = (300,300), swapRB=True, crop=False)
-
+    blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
 
     # print("[INFO] computing object detections...")
     net.setInput(blob)
@@ -35,18 +31,15 @@ def detect(dataset, foldername, filename, ch, mode_img, bbox_log, output_result_
 
     for i in np.arange(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
-        if confidence > CONFIDENCE_TH:
 
+        if confidence > CONFIDENCE_TH:
             idx = int(detections[0, 0, i, 1])
-            if label_dataset=='coco':
-                idx -=1
-    #        print('{} {} {} {}'.format(filename,ch,LABELS[idx],confidence))
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
 
             # display the prediction
             label = "{}: {:.2f}%".format(LABELS[idx], confidence * 100)
-            #print("[INFO] {}".format(label))
+            # print("[INFO] {}".format(label))
             class_name = LABELS[idx].strip().replace(" ", "_")
             if mode_img:
                 cv2.rectangle(image, (startX, startY), (endX, endY), COLORS[idx], 2)
@@ -62,7 +55,7 @@ def detect(dataset, foldername, filename, ch, mode_img, bbox_log, output_result_
                     str(endX) + "," + str(endY) + "," + str(confidence) + "," + class_name + "\n"
                 )
                 fo2.write(class_name + ' ' + str(confidence) + ' ' + str(startX) + ' ' + str(startY) + ' ' + str(
-                    endX) + ' ' + str(endY)+'\n')
+                    endX) + ' ' + str(endY)+"\n")
 
     if mode_img:
         # show the output image
@@ -85,45 +78,24 @@ if __name__ == '__main__':
     ap.add_argument('-v', '--visualize', action='store_true',
                     help="whether or not we are going to visualize each instance")
     ap.add_argument('-l', '--savelog', action='store_true', help="whether or not print results in a file")
-#    ap.add_argument('-o', '--output_folder', required=True, help="output results folder")
-    ap.add_argument('-m', '--model', default=1 ,help="1.coco mobilenet 20180329 2.coco inception 20171117 3.coco mobilenet 20171106 4.pascalvoc mobilenet")
-
+    ap.add_argument('-o', '--output_folder', required=True, help="output results folder")
 
     args = vars(ap.parse_args())
-    model = int(args['model'])
     dataset = args['dataset']
     vis = args['visualize']
     log = args['savelog']
     MI3path = args['input_path']
+    output_folder = 'output/'+args['output_folder']
 
     class_label_path = 'labels'
     label_dataset = 'coco'
-    #prototxt = 'SSD_model/ssd_mobilenet_v1_coco_2017_11_17.pbtxt'
-    #prototxt = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29/saved_model/saved_model.pb'
-    #1. tensorflow 20180329
-    if model==1:
-        prototxt = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29.pbtxt'
-        weightsPath = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb'
-        output_folder = 'output/ssd_mobilenet_v2_coco_2018_03_29'
+    #    prototxt = 'SSD_model/ssd_mobilenet_v1_coco_2017_11_17.pbtxt'
+    #    prototxt = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29/saved_model/saved_model.pb'
+    prototxt = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29.pbtxt'
+    #    prototxt = "SSD_model/ssd_inception_v2_coco_2017_11_17.pbtxt"
+    #    prototxt = "SSD_model/MobileNetSSD_deploy.prototxt.txt"
+    model = "SSD_model/MobileNetSSD_deploy.caffemodel"
 
-    #2. tesorflow 20171117
-    elif model==2:
-        prototxt = "SSD_model/ssd_inception_v2_coco_2017_11_17.pbtxt"
-        weightsPath = 'SSD_model/ssd_inception_v2_coco_2017_11_17/frozen_inference_graph.pb'
-        output_folder = 'output/ssd_inception_v2_coco_2017_11_17'
-    #3 tensorflow 11_06_2017
-    elif model ==3:
-        prototxt = 'SSD_model/ssd_mobilenet_v1_coco.pbtxt'
-        weightsPath = 'SSD_model/ssd_mobilenet_v1_coco_11_06_2017/frozen_inference_graph.pb'
-        output_folder = 'output/ssd_mobilenet_v1_coco_2017_11_06'
-   #4 Caffe 
-    elif model==4:
-        prototxt = "SSD_model/MobileNetSSD_deploy.prototxt.txt"
-        caffemodel = "SSD_model/MobileNetSSD_deploy.caffemodel"
-        #output_folder = 'output/ssd_mobilenet_pascalvoc'
-        output_folder = 'output/ssd_mobilenet_pascalvoc_2'
-
-        label_dataset='pascal' 
     # modelConfiguration = "yolov3-tiny.cfg"
     # modelBinary = "yolov3.weights"
 
@@ -131,15 +103,15 @@ if __name__ == '__main__':
     # detect, then generate a set of bounding box colors for each class
     labelsPath = os.path.sep.join([class_label_path, label_dataset + ".names"])
     LABELS = open(labelsPath).read().strip().split("\n")
-    print(LABELS)
+
     COLORS = np.random.uniform(0, 255, size=(len(LABELS), 3))
 
     # load our serialized model from disk
     print("[INFO] loading model...")
-    if model==4:
-        net = cv2.dnn.readNetFromCaffe(prototxt, caffemodel)
-    else:
-        net = cv2.dnn.readNetFromTensorflow(weightsPath,prototxt)
+
+    #    net = cv2.dnn.readNetFromCaffe(prototxt, model)
+    weightsPath = 'SSD_model/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.pb'
+    net = cv2.dnn.readNetFromTensorflow(weightsPath, prototxt)
     # net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelBinary);
     method = 'SSD'
     #    dataset = 'Pathway1_1'
@@ -157,6 +129,7 @@ if __name__ == '__main__':
         if not os.path.exists(output_result_folder):
             os.makedirs(output_result_folder)
 
-        for filename in os.listdir(input_folder):
+    for filename in os.listdir(input_folder):
+        if filename.endswith(".jpg") or filename.endwith(".png"):
             detect(dataset, input_folder, filename, channel, vis, log, output_result_folder, output_img_folder)
     fo.close()
