@@ -149,7 +149,6 @@ if __name__ == '__main__':
     class_label_path = 'labels'
     label_dataset = 'coco'
 
-    param_mask_rcnn="mask-rcnn-coco"
 
   # load the COCO class labels our Mask R-CNN was trained on
     labelsPath = os.path.sep.join([class_label_path,label_dataset+'.names'])
