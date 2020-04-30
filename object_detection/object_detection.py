@@ -25,6 +25,8 @@ def mask_detector(net, image):
     print("[INFO] Mask R-CNN took {:.6f} seconds".format(end - start))
 
     bbList = []
+    confList = []
+    classList = []
     # loop over the number of detected objects
     for i in range(0, boxes.shape[2]):
         classID = int(boxes[0, 0, i, 1])
@@ -35,13 +37,16 @@ def mask_detector(net, image):
         if confidence > CONFIDENCE_TH:
             box = boxes[0, 0, i, 3:7] * np.array([W, H, W, H])
             (startX, startY, endX, endY) = box.astype("int")
-            bbList.append(classID,confidence,(startX, startY, endX, endY))
-    return bbList
+            bbList.append((startX, startY, endX, endY))
+            confList.append(confidence)
+            classList.append(classID)
+    return confList, classList, bbList
 
 def SSD_detector(net, image):
     (h, w) = image.shape[:2]
 
-    blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
+    #blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 0.007843, (300, 300), 127.5)
+    blob = cv2.dnn.blobFromImage(image, size=(300, 300), swapRB=True, crop=False)
 
     # print("[INFO] computing object detections...")
     net.setInput(blob)
@@ -51,16 +56,26 @@ def SSD_detector(net, image):
     print("[INFO] took {:.6f} seconds".format(end - start))
 
     bbList = []
+    confList = []
+    classList = []
     for i in np.arange(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
 
         if confidence > CONFIDENCE_TH:
-            idx = int(detections[0, 0, i, 1])
+            classID = int(detections[0, 0, i, 1])
+            if label_dataset == 'coco':
+                classID -= 1
+
+            class_name = LABELS[classID].strip().replace(" ", "_")
+
+
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
+            bbList.append((startX, startY, endX, endY))
+            confList.append(confidence)
+            classList.append(classID)
 
-            bbList.append(idx,confidence,(startX, startY, endX, endY))
-    return bbList
+    return confList, classList, bbList
 
 
 def YOLO_detector(net, image):
@@ -80,8 +95,9 @@ def YOLO_detector(net, image):
     # show timing information on YOLO
     print("[INFO] YOLO took {:.6f} seconds".format(end - start))
 
-    bblist = []
-
+    bbList = []
+    confList = []
+    classList = []
     # loop over each of the layer outputs
     for output in layerOutputs:
         # loop over each of the detections
@@ -96,19 +112,24 @@ def YOLO_detector(net, image):
                 startX = int(centerX - (width / 2))
                 startY = int(centerY - (height / 2))
 
-                bblist.append(classID, confidence, (startX, startY, startX+width, startY+height))
-    return bblist
+                bbList.append((startX, startY, startX+width, startY+height))
+                confList.append(confidence)
+                classList.append(classID)
+
+    return confList, classList, bbList
 
 def detect(net, detector_name, image, fo , mode_img):
 
     if detector_name == 'SSD':
-        bblist = SSD_detector(net, image)
+        conflist, classidlist, bblist = SSD_detector(net, image)
     elif detector_name == 'mask':
-        bblist = mask_detector(net, image)
+        conflist, classidlist, bblist = mask_detector(net, image)
     else:
-        bblist = YOLO_detector(net, image)
+        conflist, classidlist, bblist = YOLO_detector(net, image)
 
-    for class_id, confidence, (startX, startY, endX, endY) in bblist:
+    for id, (startX, startY, endX, endY) in enumerate(bblist):
+        class_id = classidlist[id]
+        confidence = conflist[id]
         class_name = LABELS[class_id].strip().replace(" ", "_")
         class_color = COLORS[class_id]
         if mode_img:
@@ -168,6 +189,7 @@ if __name__ == '__main__':
 
 
 
+
     # load training dataset class
     class_label_path = 'labels'
     label_dataset = 'coco'
@@ -187,8 +209,9 @@ if __name__ == '__main__':
 
 
     for filename in os.listdir(input_folder):
-        image = cv2.imread(input_folder + "/" + filename)
-        fo2 = open(output_result_folder + '/' + filename.replace('jpg', 'txt'), "w")
+        if filename.endswith(".jpg") or filename.endwith(".png"):
+            image = cv2.imread(input_folder + "/" + filename)
+            fo2 = open(output_result_folder + '/' + filename.replace('jpg', 'txt'), "w")
 
-        detect(detector, detector_name, image, fo2,  vis)
-        fo2.close()
+            detect(detector, detector_name, image, fo2,  vis)
+            fo2.close()
