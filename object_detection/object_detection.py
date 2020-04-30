@@ -172,8 +172,7 @@ if __name__ == '__main__':
     ap.add_argument('-o', '--output_folder', required=True, help="output results folder")
 
     args = vars(ap.parse_args())
-    detector_name  = args['detector']
-    dataset = args['dataset']
+    detector_name = args['detector']
     vis = args['visualize']
     input_folder = args['input_path']
     output_folder = 'output/'+args['output_folder']
