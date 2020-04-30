@@ -99,7 +99,7 @@ def YOLO_detector(net, image):
                 bblist.append(classID, confidence, (startX, startY, startX+width, startY+height))
     return bblist
 
-def detect(net, detector_name, foldername, filename, mode_img, bbox_log):
+def detect(net, detector_name, foldername, filename, mode_img):
 
     output_result_folder = os.path.join(foldername, 'detection_results')
     output_img_folder = os.path.join(foldername, 'output_images')
@@ -190,4 +190,4 @@ if __name__ == '__main__':
     detector = get_model(detector_name)
 
     for filename in os.listdir(input_folder):
-        detect(detector, input_folder, filename,  vis)
+        detect(detector, detector_name, input_folder, filename,  vis)
