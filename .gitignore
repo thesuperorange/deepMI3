@@ -6,7 +6,7 @@ data/*
 object_detection/SSD_model
 object_detection/mask-rcnn-coco
 object_detection/yolo-model
-object_detection/output
+object_detection/output/*
 # READ THIS BEFORE YOU REFACTOR ME
 #
 # setup.py uses the list of patterns in this file to decide
