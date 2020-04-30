@@ -99,18 +99,7 @@ def YOLO_detector(net, image):
                 bblist.append(classID, confidence, (startX, startY, startX+width, startY+height))
     return bblist
 
-def detect(net, detector_name, foldername, filename, mode_img):
-
-    output_result_folder = os.path.join(foldername, 'detection_results')
-    output_img_folder = os.path.join(foldername, 'output_images')
-    if not os.path.exists(output_img_folder):
-        os.makedirs(output_img_folder)
-    if not os.path.exists(output_result_folder):
-        os.makedirs(output_result_folder)
-
-    fo2 = open(output_result_folder + '/' + filename.replace('jpg','txt'), "w")
-
-    image = cv2.imread(foldername + "/" + filename)
+def detect(net, detector_name, image, fo , mode_img):
 
     if detector_name == 'SSD':
         bblist = SSD_detector(net, image)
@@ -130,14 +119,14 @@ def detect(net, detector_name, foldername, filename, mode_img):
                 image, text, (startX, y),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, class_color, 2
             )
-        fo2.write(class_name + ' ' + str(confidence) + ' ' + str(startX) + ' ' + str(startY) + ' ' + str(
+        fo.write(class_name + ' ' + str(confidence) + ' ' + str(startX) + ' ' + str(startY) + ' ' + str(
                 endX) + ' ' + str(endY)+"\n")
 
     if mode_img:
         output_name = output_img_folder + "/" + filename
         print(output_name)
         cv2.imwrite(output_name, image)
-    fo2.close()
+
 
 def get_model(detector_name):
     if detector_name == 'SSD':
@@ -189,5 +178,17 @@ if __name__ == '__main__':
 
     detector = get_model(detector_name)
 
+    output_result_folder = os.path.join(output_folder, 'detection_results')
+    output_img_folder = os.path.join(output_folder, 'output_images')
+    if not os.path.exists(output_img_folder):
+        os.makedirs(output_img_folder)
+    if not os.path.exists(output_result_folder):
+        os.makedirs(output_result_folder)
+
+
     for filename in os.listdir(input_folder):
-        detect(detector, detector_name, input_folder, filename,  vis)
+        image = cv2.imread(input_folder + "/" + filename)
+        fo2 = open(output_result_folder + '/' + filename.replace('jpg', 'txt'), "w")
+
+        detect(detector, detector_name, image, fo2,  vis)
+        fo2.close()
