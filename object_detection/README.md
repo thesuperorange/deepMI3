@@ -9,9 +9,9 @@
 
 | detector  | backbone | dataset | download |
 | ------------- | ------------- | ------------- | ------------- |
-| SSD | MobileNetv2 | COCO |  |
-| YOLOv3 | Darknet  | COCO |  |
-| mask R-CNN | Res-101 | COCO |  |
+| SSD | MobileNetv2 | COCO | [SSD_model](https://drive.google.com/open?id=16GR0_LnOKJGJSz8VBUtxlaXbIApvd9IZ) |
+| YOLOv3 | Darknet  | COCO | [YOLO model](https://drive.google.com/open?id=1LlLr-cwZaEt4Fhs5ZgF0XmLMr-osQ2vb) |
+| mask R-CNN | Res-101 | COCO | [Mask R-CNN model](https://drive.google.com/open?id=1tVzaQQp8PMQlTf0LTP1xglMnKtFD9nf4)  |
 
 
 ## mask R-CNN
