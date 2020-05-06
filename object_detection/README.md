@@ -19,7 +19,7 @@
 python object_detection.py -d <detector> -i <input_path> -v -o <output folder>
 
 ```
-> -d detector  Ex: pathway1_1, Room_1 <br>
+> -d detector  Ex: SSD, YOLO, mask <br>
 > -i input path  Ex: /work/xxxx/MI3_dataset/JPEGImages/ <br>
 > -v is for visualization <br>
 
