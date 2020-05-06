@@ -457,6 +457,35 @@ def evaluation(gtFolder,detFolder,iouThreshold,gtFormat,detFormat,savePath,confi
     return output_str
 
 
+if __name__ == '__main__':
+
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-g", "--gtfolder", required=True,  help="ground-truth folder")
+    ap.add_argument("-d", "--detfolder", required=True, help="detection results folder")
+    ap.add_argument('-f', '--format', required=False, default='xyrb', help="format xyrb or xywh")
+    ap.add_argument('-o', '--savepath', required=False, help="output accuracy chart")
+    ap.add_argument('-t', '--iouTH', required=False, default=0.5, help="iou threshold")
+    ap.add_argument('-c', '--confTH', required=False, default=0, help="confidence threshold")
+
+    ## range setting: see run_range.py
+
+    args = vars(ap.parse_args())
+    detector_name = args['detector']
+    vis = args['visualize']
+    input_folder = args['input_path']
+    output_folder = 'output/'+args['output_folder']
 
 
 
+    gtFolder = args['gtfolder']
+    detFolder = args['detfolder']
+    gtformat = args['format']
+    detformat = gtformat
+    confidence_TH = float(args['confTH'])
+    iou_TH = float(args['iouTH'])
+    sp = args['savepath']
+
+
+    output_str = pascalvoc.evaluation(gtFolder, detFolder, iou_TH, gtformat, detformat, savePath=sp, confidence_TH=confidence_TH, range=None)
+    print(output_str)
