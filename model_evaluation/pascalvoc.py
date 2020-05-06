@@ -487,5 +487,5 @@ if __name__ == '__main__':
     sp = args['savepath']
 
 
-    output_str = pascalvoc.evaluation(gtFolder, detFolder, iou_TH, gtformat, detformat, savePath=sp, confidence_TH=confidence_TH, range=None)
+    output_str = evaluation(gtFolder, detFolder, iou_TH, gtformat, detformat, savePath=sp, confidence_TH=confidence_TH, range=None)
     print(output_str)
