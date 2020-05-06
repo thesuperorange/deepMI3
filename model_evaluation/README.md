@@ -3,11 +3,13 @@
 ## Run
 
 ```
-python ~/Object-Detection-Metrics/pascalvoc.py -t 0.5 -f xyrb -g /<groundtruths path> -d <detection results path>
+python pascalvoc.py -t 0.5 -c 0 -f xyrb -g <groundtruths path> -d <detection results path>
 ```
 
-> -t threshold <br> t=0.5 AP50, t=0.95 AP95, t=0 mAP(avg of 50~95)<br>
+> -c confidence threshold c=0.5 AP50, c=0.95 AP95, c=0 mAP(avg of 50~95)<br>
+> -t IoU threshold default=0.5<br>
 > -f xyrb(right/bottom) or xywh (width/height)
+> -o save path for PRcurve (not necessary)
 
 
 ## reference
