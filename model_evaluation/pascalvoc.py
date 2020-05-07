@@ -471,11 +471,6 @@ if __name__ == '__main__':
     ## range setting: see run_range.py
 
     args = vars(ap.parse_args())
-    detector_name = args['detector']
-    vis = args['visualize']
-    input_folder = args['input_path']
-    output_folder = 'output/'+args['output_folder']
-
 
 
     gtFolder = args['gtfolder']
@@ -487,5 +482,5 @@ if __name__ == '__main__':
     sp = args['savepath']
 
 
-    output_str = pascalvoc.evaluation(gtFolder, detFolder, iou_TH, gtformat, detformat, savePath=sp, confidence_TH=confidence_TH, range=None)
+    output_str = evaluation(gtFolder, detFolder, iou_TH, gtformat, detformat, savePath=sp, confidence_TH=confidence_TH, range=None)
     print(output_str)
