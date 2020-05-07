@@ -471,11 +471,6 @@ if __name__ == '__main__':
     ## range setting: see run_range.py
 
     args = vars(ap.parse_args())
-    detector_name = args['detector']
-    vis = args['visualize']
-    input_folder = args['input_path']
-    output_folder = 'output/'+args['output_folder']
-
 
 
     gtFolder = args['gtfolder']

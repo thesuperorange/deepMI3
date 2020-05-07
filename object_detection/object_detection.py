@@ -209,7 +209,7 @@ if __name__ == '__main__':
 
 
     for filename in os.listdir(input_folder):
-        if filename.endswith(".jpg") or filename.endwith(".png"):
+        if filename.endswith(".jpg") or filename.endswith(".png"):
             image = cv2.imread(input_folder + "/" + filename)
             fo2 = open(output_result_folder + '/' + filename.replace('jpg', 'txt'), "w")
 
