@@ -31,7 +31,8 @@ def mask_detector(net, image):
     for i in range(0, boxes.shape[2]):
         classID = int(boxes[0, 0, i, 1])
         confidence = boxes[0, 0, i, 2]
-
+        print(confidence)
+        print(classID)
         # filter out weak predictions by ensuring the detected probability
         # is greater than the minimum probability
         if confidence > CONFIDENCE_TH:
@@ -87,6 +88,12 @@ def YOLO_detector(net, image):
 
     blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416),
                                  swapRB=True, crop=False)
+
+
+    #net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+    #net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
+
+
     net.setInput(blob)
     start = time.time()
     layerOutputs = net.forward(ln)

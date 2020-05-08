@@ -299,6 +299,9 @@ if __name__ == '__main__':
         im_in = np.array(frame)
       # Load the demo image
       else:
+        im_file_name = imglist[num_images]
+        if not im_file_name.endswith('jpg') and not im_file_name.endswith('jpg'):
+            continue
         im_file = os.path.join(input_image_folder, imglist[num_images])
         # im = cv2.imread(im_file)
         im_in = np.array(imread(im_file))
