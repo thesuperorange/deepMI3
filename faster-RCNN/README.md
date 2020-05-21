@@ -116,7 +116,7 @@ python demo.py  --dataset coco --net res101 --checksession 1 --checkepoch 10 --c
 <br>
 <img src="img/face_output_00483.png">
 
-## Authorshihp
+## Authorship
 * original project: https://github.com/jwyang/faster-rcnn.pytorch
 * This project is created by [Jianwei Yang](https://github.com/jwyang)  and [Jiasen Lu](https://github.com/jiasenlu), and modified by Peggy Lu
 
