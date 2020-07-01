@@ -1,6 +1,6 @@
 faster-RCNN/data/*
 faster-RCNN/output/*
-faster-RCNN/model/*
+faster-RCNN/models/*
 data/*
 
 object_detection/SSD_model

@@ -31,10 +31,13 @@ def mask_detector(net, image):
     for i in range(0, boxes.shape[2]):
         classID = int(boxes[0, 0, i, 1])
         confidence = boxes[0, 0, i, 2]
-
+        print(confidence)
+        print(classID)
         # filter out weak predictions by ensuring the detected probability
         # is greater than the minimum probability
         if confidence > CONFIDENCE_TH:
+            #print(confidence)
+            #print(LABELS[classID].strip().replace(" ", "_"))
             box = boxes[0, 0, i, 3:7] * np.array([W, H, W, H])
             (startX, startY, endX, endY) = box.astype("int")
             bbList.append((startX, startY, endX, endY))
@@ -87,6 +90,12 @@ def YOLO_detector(net, image):
 
     blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416),
                                  swapRB=True, crop=False)
+
+
+    #net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+    #net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
+
+
     net.setInput(blob)
     start = time.time()
     layerOutputs = net.forward(ln)
@@ -209,7 +218,7 @@ if __name__ == '__main__':
 
 
     for filename in os.listdir(input_folder):
-        if filename.endswith(".jpg") or filename.endwith(".png"):
+        if filename.endswith(".jpg") or filename.endswith(".png"):
             image = cv2.imread(input_folder + "/" + filename)
             fo2 = open(output_result_folder + '/' + filename.replace('jpg', 'txt'), "w")
 
