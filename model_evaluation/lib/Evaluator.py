@@ -125,11 +125,12 @@ class Evaluator:
             acc_FP = np.cumsum(FP)
             acc_TP = np.cumsum(TP)
             # if c == 'person':
-            #     print(acc_FP)
+            #print(acc_TP)
             #     print(acc_TP)
             #
             #
-            #     print('npos={}'.format(npos))
+            #print('npos={}'.format(npos))
+            np.seterr(divide='ignore',invalid='ignore')
             rec = acc_TP / npos
             prec = np.divide(acc_TP, (acc_FP + acc_TP))
 
