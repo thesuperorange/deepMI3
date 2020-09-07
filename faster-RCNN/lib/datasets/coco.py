@@ -144,10 +144,17 @@ class coco(imdb):
     # Sanitize bboxes -- some are invalid
     valid_objs = []
     for obj in objs:
-      x1 = np.max((0, obj['bbox'][0]))
-      y1 = np.max((0, obj['bbox'][1]))
-      x2 = np.min((width - 1, x1 + np.max((0, obj['bbox'][2] - 1))))
-      y2 = np.min((height - 1, y1 + np.max((0, obj['bbox'][3] - 1))))
+#      x1 = np.max((0, obj['bbox'][0]))
+#      y1 = np.max((0, obj['bbox'][1]))
+#      x2 = np.min((width - 1, x1 + np.max((0, obj['bbox'][2] - 1))))
+#      y2 = np.min((height - 1, y1 + np.max((0, obj['bbox'][3] - 1))))
+      x1 = float(bbox.find('xmin').text) 
+      y1 = float(bbox.find('ymin').text) 
+      x2 = float(bbox.find('xmax').text) 
+      y2 = float(bbox.find('ymax').text) 
+
+
+
       if obj['area'] > 0 and x2 >= x1 and y2 >= y1:
         obj['clean_bbox'] = [x1, y1, x2, y2]
         valid_objs.append(obj)
