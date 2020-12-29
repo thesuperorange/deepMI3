@@ -155,6 +155,11 @@ if __name__ == '__main__':
       args.imdb_name = "MI3_train"
       args.imdbval_name = "MI3_val"
       args.set_cfgs = ['ANCHOR_SCALES', '[4, 8, 16, 32]', 'ANCHOR_RATIOS', '[0.5,1,2]', 'MAX_NUM_GT_BOXES', '20']
+
+  elif args.dataset == "KAIST":
+      args.imdb_name = "KAIST_train"
+      args.imdbval_name = "KAIST_test"
+      args.set_cfgs = ['ANCHOR_SCALES', '[4, 8, 16, 32]', 'ANCHOR_RATIOS', '[0.5,1,2]', 'MAX_NUM_GT_BOXES', '20']
   
   elif args.dataset == "wider_face":
       args.imdb_name = "wider_face_train"

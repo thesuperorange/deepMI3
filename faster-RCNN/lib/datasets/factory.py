@@ -17,6 +17,7 @@ from datasets.imagenet import imagenet
 from datasets.vg import vg
 from datasets.wider_face import wider_face
 from datasets.mi3 import mi3
+from datasets.kaist import kaist
 import numpy as np
 
 # Set up voc_<year>_<split>
@@ -67,6 +68,12 @@ for split in ['train', 'val', 'test']:
 for split in ['train', 'val', 'test']:
     name = 'MI3_{}'.format(split)
     __sets[name] = (lambda split=split: mi3(split))
+
+for split in['train', 'test']:
+    name = 'KAIST_{}'.format(split)
+    __sets[name] = (lambda split=split: kaist(split))
+
+   
 
 def get_imdb(name):
   """Get an imdb (image database) by name."""

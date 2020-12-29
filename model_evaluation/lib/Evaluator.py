@@ -96,7 +96,7 @@ class Evaluator:
             det = Counter([cc[0] for cc in gts])
             for key, val in det.items():
                 det[key] = np.zeros(val)
-            #print("Evaluating class: %s (%d detections)" % (str(c), len(dects)))
+            print("Evaluating class: %s (%d detections)" % (str(c), len(dects)))
             # Loop through detections
             for d in range(len(dects)):
                 #print('dect %s => %s' % (dects[d][0], dects[d][3],))
@@ -124,23 +124,22 @@ class Evaluator:
             # compute precision, recall and average precision
             acc_FP = np.cumsum(FP)
             acc_TP = np.cumsum(TP)
-            # if c == 'person':
-            #print(acc_TP)
-            #     print(acc_TP)
-            #
-            #
-            #print('npos={}'.format(npos))
+#            if c == 'person':
+#                print(TP)
+#                print(acc_TP)
+#                print(acc_FP) 
+#                print('npos={}'.format(npos))
             np.seterr(divide='ignore',invalid='ignore')
             rec = acc_TP / npos
             prec = np.divide(acc_TP, (acc_FP + acc_TP))
 
 
-            # if c == 'person':
+#            if c == 'person':
             # ### see Fscore###
-            #     fscore = (2 * prec[-1] * rec[-1]) / (prec[-1] + rec[-1])
-            #     print('FP #={}, TP #={}'.format(acc_FP[-1], acc_TP[-1]))
-            #     print('fscore={0:.2f}%'.format(fscore * 100))
-            #     print('precision={}, recall={}'.format(prec[-1], rec[-1]))
+#                fscore = (2 * prec[-1] * rec[-1]) / (prec[-1] + rec[-1])
+#                print('FP #={}, TP #={}'.format(acc_FP[-1], acc_TP[-1]))
+#                print('fscore={0:.2f}%'.format(fscore * 100))
+#                print('precision={}, recall={}'.format(prec[-1], rec[-1]))
             # Depending on the method, call the right implementation
             if method == MethodAveragePrecision.EveryPointInterpolation:
                 [ap, mpre, mrec, ii] = Evaluator.CalculateAveragePrecision(rec, prec)

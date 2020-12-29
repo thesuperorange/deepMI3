@@ -121,7 +121,7 @@ def getBoundingBoxes(directory,
 
         filename_split = nameOfImage.split('_')
         if range is None or (int(filename_split[3]) >= range[0] and int(filename_split[3]) <= range[1]):
-        #print(nameOfImage)
+#            print(nameOfImage)
             fh1 = open(f, "r")
             for line in fh1:
                 line = line.replace("\n", "")
@@ -405,7 +405,10 @@ def evaluation(gtFolder,detFolder,iouThreshold,gtFormat,detFormat,savePath,confi
 
             # Get metric values per each class
             cl = metricsPerClass['class']
+            print(cl)
+
             ap = metricsPerClass['AP']
+            print(ap)
             precision = metricsPerClass['precision']
             recall = metricsPerClass['recall']
             totalPositives = metricsPerClass['total positives']
@@ -415,6 +418,7 @@ def evaluation(gtFolder,detFolder,iouThreshold,gtFormat,detFormat,savePath,confi
             if totalPositives > 0:
                 validClasses = validClasses + 1
                 acc_AP = acc_AP + ap
+                print(acc_AP)
                 prec = ['%.2f' % p for p in precision]
 
                 rec = ['%.2f' % r for r in recall]
