@@ -75,15 +75,17 @@ def parse_args():
   parser.add_argument('--parallel_type', dest='parallel_type',
                       help='which part of model to parallel, 0: all, 1: model before roi pooling',
                       default=0, type=int)
-  parser.add_argument('--checksession', dest='checksession',
-                      help='checksession to load model',
-                      default=1, type=int)
-  parser.add_argument('--checkepoch', dest='checkepoch',
-                      help='checkepoch to load network',
-                      default=1, type=int)
-  parser.add_argument('--checkpoint', dest='checkpoint',
-                      help='checkpoint to load network',
-                      default=10021, type=int)
+#   parser.add_argument('--checksession', dest='checksession',
+#                       help='checksession to load model',
+#                       default=1, type=int)
+#   parser.add_argument('--checkepoch', dest='checkepoch',
+#                       help='checkepoch to load network',
+#                       default=1, type=int)
+#   parser.add_argument('--checkpoint', dest='checkpoint',
+#                       help='checkpoint to load network',
+#                       default=10021, type=int)
+  parser.add_argument('--model_name', dest='model_name',
+                      help='model name')
   parser.add_argument('--bs', dest='batch_size',
                       help='batch_size',
                       default=1, type=int)
@@ -177,24 +179,11 @@ if __name__ == '__main__':
   input_dir = args.load_dir + "/" + args.net + "/KAIST"
   if not os.path.exists(input_dir):
     raise Exception('There is no input directory for loading network from ' + input_dir)
-  load_name = os.path.join(input_dir,
-    'faster_rcnn_{}_{}_{}.pth'.format(args.checksession, args.checkepoch, args.checkpoint))
+  load_name = os.path.join(input_dir,args.model_name)
+    
 
   KAIST_classes = np.asarray(['__background__','person','people','cyclist'])
-#  if args.dataset == "pascal_voc":
-#  args.imdb_name = "MI3_train"
-#  args.imdbval_name = "MI3_val"
-#  args.set_cfgs = ['ANCHOR_SCALES', '[4, 8, 16, 32]', 'ANCHOR_RATIOS', '[0.5,1,2]']
-#  elif args.dataset == "coco":
-#    args.imdb_name = "coco_2014_train+coco_2014_valminusminival"
-#    args.imdbval_name = "coco_2014_minival"
-#    args.set_cfgs = ['ANCHOR_SCALES', '[4, 8, 16, 32]', 'ANCHOR_RATIOS', '[0.5,1,2]']
 
-#  imdb, roidb, ratio_list, ratio_index = combined_roidb(args.imdbval_name, False)
-#  imdb.competition_mode(on=True)
-#  ('__background__', 'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush')
-
-#  pascal_classes=np.asarray(imdb.classes)
   # initilize the network here.
   if args.net == 'vgg16':
     fasterRCNN = vgg16(KAIST_classes, pretrained=True, class_agnostic=args.class_agnostic)

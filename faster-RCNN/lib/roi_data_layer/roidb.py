@@ -9,6 +9,8 @@ from model.utils.config import cfg
 from datasets.factory import get_imdb
 import PIL
 import pdb
+import pickle, os
+
 
 def prepare_roidb(imdb):
   """Enrich the imdb's roidb by adding some derived quantities that
@@ -132,6 +134,12 @@ def combined_roidb(imdb_names, training=True):
   if training:
     roidb = filter_roidb(roidb)
 
+  ## write
+  cache_path = 'data/cache'
+  cache_file = os.path.join(cache_path, imdb_names + '_gt_roidb.pkl')
+  with open(cache_file, 'wb') as fid:
+    pickle.dump(roidb, fid, pickle.HIGHEST_PROTOCOL)
+  print('wrote gt roidb to {}'.format(cache_file))
   ratio_list, ratio_index = rank_roidb_ratio(roidb)
 
   return imdb, roidb, ratio_list, ratio_index
