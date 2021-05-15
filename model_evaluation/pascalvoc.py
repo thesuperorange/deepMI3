@@ -405,10 +405,10 @@ def evaluation(gtFolder,detFolder,iouThreshold,gtFormat,detFormat,savePath,confi
 
             # Get metric values per each class
             cl = metricsPerClass['class']
-            print(cl)
+            #print(cl)
 
             ap = metricsPerClass['AP']
-            print(ap)
+            #print(ap)
             precision = metricsPerClass['precision']
             recall = metricsPerClass['recall']
             totalPositives = metricsPerClass['total positives']
@@ -418,7 +418,7 @@ def evaluation(gtFolder,detFolder,iouThreshold,gtFormat,detFormat,savePath,confi
             if totalPositives > 0:
                 validClasses = validClasses + 1
                 acc_AP = acc_AP + ap
-                print(acc_AP)
+                #print(acc_AP)
                 prec = ['%.2f' % p for p in precision]
 
                 rec = ['%.2f' % r for r in recall]

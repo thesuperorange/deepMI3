@@ -96,7 +96,7 @@ class Evaluator:
             det = Counter([cc[0] for cc in gts])
             for key, val in det.items():
                 det[key] = np.zeros(val)
-            print("Evaluating class: %s (%d detections)" % (str(c), len(dects)))
+            #print("Evaluating class: %s (%d detections)" % (str(c), len(dects)))
             # Loop through detections
             for d in range(len(dects)):
                 #print('dect %s => %s' % (dects[d][0], dects[d][3],))

@@ -33,9 +33,14 @@ from model.utils.net_utils import weights_normal_init, save_net, load_net, \
 from model.faster_rcnn.vgg16 import vgg16
 from model.faster_rcnn.resnet import resnet
 
+from frcnn_helper import *
+from scipy.special import softmax
+
 import pickle
 
-imdb_list = ['KAIST_campus','KAIST_road','KAIST_downtown']
+import FedUtils
+
+imdb_list = ['KAIST_campus',  'KAIST_road','KAIST_downtown']
 data_cache_path = 'data/cache'
 imdb_classes =  ('__background__',  # always index 0
                           'person',
@@ -107,10 +112,10 @@ def parse_args():
                         help='learning rate decay ratio',
                         default=0.1, type=float)
 
-    # set training session
-    parser.add_argument('--s', dest='session',
-                        help='training session',
-                        default=1, type=int)
+    # weighted FedAvg
+    parser.add_argument('--wk', dest='wkFedAvg',
+                        help='using within class as weighted to average model weight',
+                        action='store_true')
 
     # resume trained model
     parser.add_argument('--r', dest='resume',
@@ -132,7 +137,9 @@ def parse_args():
                     help='total rounds',
                     default=10, type=int)
     
-
+    parser.add_argument('--k', dest='k',
+                        help='k of cluster #',
+                        default=5, type=int)
 
 
     args = parser.parse_args()
@@ -191,53 +198,49 @@ class sampler(Sampler):
         return self.num_data
 
     
-def initial_network(args):
+# def initial_network(args):
     
-      # initilize the network here.
-    if args.net == 'vgg16':
-        fasterRCNN = vgg16(imdb_classes, pretrained=True, class_agnostic=args.class_agnostic)
-    elif args.net == 'res101':
-        fasterRCNN = resnet(imdb_classes, 101, pretrained=True, class_agnostic=args.class_agnostic)
-    elif args.net == 'res50':
-        fasterRCNN = resnet(imdb_classes, 50, pretrained=True, class_agnostic=args.class_agnostic)
-    elif args.net == 'res152':
-        fasterRCNN = resnet(imdb_classes, 152, pretrained=True, class_agnostic=args.class_agnostic)
-    else:
-        print("network is not defined")
-        pdb.set_trace()
+#       # initilize the network here.
+#     if args.net == 'vgg16':
+#         fasterRCNN = vgg16(imdb_classes, pretrained=True, class_agnostic=args.class_agnostic)
+#     elif args.net == 'res101':
+#         fasterRCNN = resnet(imdb_classes, 101, pretrained=True, class_agnostic=args.class_agnostic)
+#     elif args.net == 'res50':
+#         fasterRCNN = resnet(imdb_classes, 50, pretrained=True, class_agnostic=args.class_agnostic)
+#     elif args.net == 'res152':
+#         fasterRCNN = resnet(imdb_classes, 152, pretrained=True, class_agnostic=args.class_agnostic)
+#     else:
+#         print("network is not defined")
+#         pdb.set_trace()
 
-    fasterRCNN.create_architecture()
-    
+#     fasterRCNN.create_architecture()
 
+#     if args.cuda:
+#         fasterRCNN.cuda()
 
-    if args.cuda:
-        fasterRCNN.cuda()
-
-    if args.mGPUs:
-        fasterRCNN = nn.DataParallel(fasterRCNN)
+#     if args.mGPUs:
+#         fasterRCNN = nn.DataParallel(fasterRCNN)
         
+#     return fasterRCNN
 
-        
-    return fasterRCNN
-
-def getOptimizer(fasterRCNN,args):
-    lr = args.lr
-    params = []
-    for key, value in dict(fasterRCNN.named_parameters()).items():
-        if value.requires_grad:
-            if 'bias' in key:
-                params += [{'params':[value],'lr':lr*(cfg.TRAIN.DOUBLE_BIAS + 1), \
-                    'weight_decay': cfg.TRAIN.BIAS_DECAY and cfg.TRAIN.WEIGHT_DECAY or 0}]
-            else:
-                params += [{'params':[value],'lr':lr, 'weight_decay': cfg.TRAIN.WEIGHT_DECAY}]
+# def getOptimizer(fasterRCNN,args):
+#     lr = args.lr
+#     params = []
+#     for key, value in dict(fasterRCNN.named_parameters()).items():
+#         if value.requires_grad:
+#             if 'bias' in key:
+#                 params += [{'params':[value],'lr':lr*(cfg.TRAIN.DOUBLE_BIAS + 1), \
+#                     'weight_decay': cfg.TRAIN.BIAS_DECAY and cfg.TRAIN.WEIGHT_DECAY or 0}]
+#             else:
+#                 params += [{'params':[value],'lr':lr, 'weight_decay': cfg.TRAIN.WEIGHT_DECAY}]
                 
-    if args.optimizer == "adam":
-        lr = lr * 0.1
-        optimizer = torch.optim.Adam(params)
+#     if args.optimizer == "adam":
+#         lr = lr * 0.1
+#         optimizer = torch.optim.Adam(params)
 
-    elif args.optimizer == "sgd":
-        optimizer = torch.optim.SGD(params, momentum=cfg.TRAIN.MOMENTUM) 
-    return optimizer
+#     elif args.optimizer == "sgd":
+#         optimizer = torch.optim.SGD(params, momentum=cfg.TRAIN.MOMENTUM) 
+#     return optimizer
 
 
 def train(args,dataloader,imdb_name,iters_per_epoch, fasterRCNN, optimizer, num_round):     
@@ -329,11 +332,11 @@ def train(args,dataloader,imdb_name,iters_per_epoch, fasterRCNN, optimizer, num_
 
                 loss_temp = 0
                 start = time.time()
-
+        #if epoch == args.max_epochs + 1 :
         save_name = os.path.join(output_dir, 'faster_rcnn_{}_{}_{}_{}.pth'.format(imdb_name,num_round, epoch, step))
         save_checkpoint({
-          'session': args.session,
-          'epoch': epoch + 1,
+          'round': num_round,
+          'epoch': epoch ,
           'model': fasterRCNN.module.state_dict() if args.mGPUs else fasterRCNN.state_dict(),
           'optimizer': optimizer.state_dict(),
           'pooling_mode': cfg.POOLING_MODE,
@@ -342,35 +345,85 @@ def train(args,dataloader,imdb_name,iters_per_epoch, fasterRCNN, optimizer, num_
         print('save model: {}'.format(save_name))
     return fasterRCNN    
         
-def avgWeight(model_list):
+# def avgWeight(model_list,ratio_list):
+#     model_tmp=[None] * parties
+#     #optims_tmp=[None] * parties
+
+#     for idx, my_model in enumerate(model_list):
+        
+#         model_tmp[idx] = my_model.state_dict()
+
+
+#     for key in model_tmp[0]:    
+#         #print(key)
+#         model_avg = 0
+
+#         for idx, model_tmp_content in enumerate(model_tmp):     # add each model              
+#             model_avg += ratio_list[idx] * model_tmp_content[key]
+            
+#         for i in range(len(model_tmp)):  #copy to each model            
+#             model_tmp[i][key] = model_avg
+#     for i in range(len(model_list)):    
+#         model_list[i].load_state_dict(model_tmp[i])
+        
+#     return model_list  #, optims_tmp
+                    
+# def load_model(model_path, args):
+#     model = initial_network(args)
+#     checkpoint = torch.load(model_path)
+    
+#     if args.mGPUs:
+#         model.module.load_state_dict(checkpoint['model'])
+#     else:
+#         model.load_state_dict(checkpoint['model'])
+    
+#     optimizer = getOptimizer(model,args)
+#     optimizer.load_state_dict(checkpoint['optimizer'])
+    
+#     start_round = checkpoint['round']
+#     return model,optimizer, start_round
+
+def FedPer(model_list,ratio_list,mGPUs):
+    
     model_tmp=[None] * parties
     #optims_tmp=[None] * parties
 
     for idx, my_model in enumerate(model_list):
-        
-        model_tmp[idx] = my_model.state_dict()
+        if mGPUs:
+            my_model = my_model.module
+            
+        model_tmp[idx] = my_model.RCNN_base.state_dict()
 
 
     for key in model_tmp[0]:    
         #print(key)
-        model_sum = 0
+        model_avg = 0
 
-        for model_tmp_content in model_tmp:      
+        for idx, model_tmp_content in enumerate(model_tmp):     # add each model              
+            model_avg += ratio_list[idx] * model_tmp_content[key]
             
-            model_sum += model_tmp_content[key]
-            #print(model_tmp_content[key])
-        for i in range(len(model_tmp)):
-            #print("model_sum={}".format(model_sum))
-            #print("len:{}".format(len(model_tmp)))
-            model_avg = model_sum/len(model_tmp)
-            #print("model_avg={}".format(model_avg))
-            model_tmp[i][key] = model_sum/len(model_tmp)
-    for i in range(len(model_list)):    
-        model_list[i].load_state_dict(model_tmp[i])
-        #optims_tmp[i] = Optims(workers, optim=optim.SGD(params=model_list[i].parameters(),lr=args.lr, momentum = args.momentum,weight_decay=args.weight_decay))
-        #optims_tmp[i] = Optims(workers, optim=optim.Adam(params=model_list[i].parameters(),lr=args.lr))
-    return model_list  #, optims_tmp
-                    
+        for i in range(len(model_tmp)):  #copy to each model            
+            model_tmp[i][key] = model_avg
+    #copy back to original model
+    for i in range(len(model_list)):  
+        if mGPUs:
+            model_list[i].module.RCNN_base.load_state_dict(model_tmp[i])
+        else:
+            model_list[i].RCNN_base.load_state_dict(model_tmp[i])
+    return model_list
+        
+def getWeight(test_images,model_list, args):
+    
+    wk_list = []
+    for fasterRCNN in model_list:
+        if args.mGPUs:
+            fasterRCNN = fasterRCNN.module
+        X = get_features(fasterRCNN, test_images, args.batch_size)/255.0
+        wk_value = within_cluster_dispersion(X, n_cluster=args.k)
+        wk_list.append(wk_value)
+        print(wk_value)
+    
+    return wk_list 
     
 if __name__ == '__main__':
 
@@ -408,28 +461,30 @@ if __name__ == '__main__':
     model_list=[None] * parties
     if args.resume:
         for i in range(parties):
-            model_list[i] = initial_network(args)
             load_name = os.path.join(output_dir,args.resume_model_name)
             print("loading checkpoint %s" % (load_name))
-            checkpoint = torch.load(load_name)
-            #args.session = checkpoint['session']
-            start_round = checkpoint['round']
-            model_list[i].load_state_dict(checkpoint['model'])
             
-            optimizer = getOptimizer(model_list[i],args)
-            optimizer.load_state_dict(checkpoint['optimizer'])
-            #lr = optimizer.param_groups[0]['lr']
-            #if 'pooling_mode' in checkpoint.keys():
-            #    cfg.POOLING_MODE = checkpoint['pooling_mode']
-            #print("loaded checkpoint %s" % (load_name))
+            model_list[i], optimizer, start_round =FedUtils.load_model(imdb_classes, load_name, args, cfg)
+            
+#             model_list[i] = initial_network(args)
+#             checkpoint = torch.load(load_name)
+#             model_list[i].load_state_dict(checkpoint['model'])
+            
+#             optimizer = getOptimizer(model_list[i],args)
+#             optimizer.load_state_dict(checkpoint['optimizer'])
+                        
+            print('start_round:{}'.format(start_round))
+            
+            
     
     else:
         for i in range(parties):
-            model_list[i] = initial_network(args)
+            model_list[i] = FedUtils.initial_network(imdb_classes, args)
         #optimizer = getOptimizer(model_list[idx],args)
 
 
     ROUND = args.round
+    wk_list_prev =[1.9260449632344736,1.6288783338524226,1.623319350129662]
     
     for i in range(start_round+1,ROUND+1):
 
@@ -437,11 +492,45 @@ if __name__ == '__main__':
          #   if not args.resume:
           #      if i==1 :
            #         model_list[idx] = initial_network(args)
-            optimizer = getOptimizer(model_list[idx],args)
+            optimizer = FedUtils.getOptimizer(model_list[idx],args,cfg)
 
-            model_list [idx] = train(args, dataloader_item,imdb_list[idx],iter_epochs_list[idx], model_list [idx], optimizer,i)
+            model_list [idx] = train(args, dataloader_item,imdb_list[idx],iter_epochs_list[idx], model_list[idx], optimizer,i)
+##--------------------gap statistic----------------------------------    
+        
+        if args.wkFedAvg:
+            # read test image pickle file
+            testimg_pickle_path = 'testimg2252.pkl'
 
-        model_list = avgWeight(model_list)
+            with open(testimg_pickle_path, 'rb') as handle:
+                test_images = pickle.load(handle)
+            # get within class dispersion        
+
+
+            wk_list_curr = getWeight(test_images,model_list, args)
+            if i==1:
+                wk_diff = wk_list_curr
+            else:
+                wk_diff=[]
+                for list1_c, list2_p in zip(wk_list_prev, wk_list_curr ):        
+                    wk_diff.append(list1_c-list2_p)
+
+            print('diff={}'.format(wk_diff))
+
+            wk_ratio = softmax(wk_diff).tolist()    
+            print('wk_ratio={}'.format(wk_ratio))
+
+            #wk_ratio = [x / sum(wk_diff) for x in wk_diff]
+            #keep wk to previous
+            wk_list_prev = wk_list_curr
+        else:
+            wk_ratio =  [1] * parties 
+            wk_ratio = [x / parties for x in wk_ratio]
+##------------------------------------------------------------------    
+
+        model_list = FedPer(model_list,wk_ratio, args.mGPUs)
+        #model_list = FedUtils.avgWeight(model_list,wk_ratio)
+        
+        
 
         save_name = os.path.join(output_dir, 'faster_rcnn_KAIST_AVG_{}.pth'.format(i))
         save_checkpoint({
