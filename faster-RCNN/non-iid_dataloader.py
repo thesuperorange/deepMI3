@@ -302,7 +302,9 @@ def avgWeight(model_list):
             #print("len:{}".format(len(model_tmp)))
             model_avg = model_sum/len(model_tmp)
             #print("model_avg={}".format(model_avg))
+
             model_tmp[i][key] = model_avg
+
     for i in range(len(model_list)):    
         model_list[i].load_state_dict(model_tmp[i])
         #optims_tmp[i] = Optims(workers, optim=optim.SGD(params=model_list[i].parameters(),lr=args.lr, momentum = args.momentum,weight_decay=args.weight_decay))

@@ -69,7 +69,9 @@ for split in ['train', 'val', 'test']:
     name = 'MI3_{}'.format(split)
     __sets[name] = (lambda split=split: mi3(split))
 
+
 for split in['train', 'test','campus', 'downtown','road','fake','train_cr','train_cd','train_rd']:
+
     name = 'KAIST_{}'.format(split)
     __sets[name] = (lambda split=split: kaist(split))
 

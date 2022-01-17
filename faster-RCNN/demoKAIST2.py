@@ -38,12 +38,17 @@ from model.faster_rcnn.resnet import resnet
 import pdb
 
 try:
+<<<<<<< HEAD
     xrange  # Python 2
+=======
+    xrange          # Python 2
+>>>>>>> ddc502c831d2f12325157d7503e1e39a218ebe21
 except NameError:
     xrange = range  # Python 3
 
 
 def parse_args():
+
     """
     Parse input arguments
     """
@@ -104,10 +109,6 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-
-lr = cfg.TRAIN.LEARNING_RATE
-momentum = cfg.TRAIN.MOMENTUM
-weight_decay = cfg.TRAIN.WEIGHT_DECAY
 
 
 def _get_image_blob(im):
@@ -376,5 +377,6 @@ if __name__ == '__main__':
         fo2.close()
         misc_toc = time.time()
         nms_time = misc_toc - misc_tic
+
 
 

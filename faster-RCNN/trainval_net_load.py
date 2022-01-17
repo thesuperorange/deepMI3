@@ -33,6 +33,7 @@ from model.utils.net_utils import weights_normal_init, save_net, load_net, \
 from model.faster_rcnn.vgg16 import vgg16
 from model.faster_rcnn.resnet import resnet
 
+
 from frcnn_helper import *
 from scipy.special import softmax
 
@@ -40,13 +41,13 @@ import pickle
 
 import FedUtils
 
-#imdb_name = 'KAIST_train_cr'  
 data_cache_path = 'data/cache'
 imdb_classes =  ('__background__',  # always index 0
                           'person',
                           'people','cyclist'
                          )
-#parties = len(imdb_list)
+
+parties = len(imdb_list)
 
 def parse_args():
     """
@@ -75,6 +76,7 @@ def parse_args():
     parser.add_argument('--save_dir', dest='save_dir',
                         help='directory to save models', default="models",
                         type=str)
+
     parser.add_argument('--save_sub_dir', dest='save_sub_dir',
                         help='directory to save models', default="",
                         type=str)
@@ -111,6 +113,7 @@ def parse_args():
     parser.add_argument('--lr_decay_gamma', dest='lr_decay_gamma',
                         help='learning rate decay ratio',
                         default=0.1, type=float)
+
 
     # freeze base layer
     parser.add_argument('--f', dest='freeze',
@@ -149,8 +152,10 @@ def parse_args():
 #                         default=5, type=int)
 
 
+
     args = parser.parse_args()
     return args
+
 
 def load_client_dataset(imdb_name):
     #dataloader_list = []
@@ -204,7 +209,7 @@ class sampler(Sampler):
     def __len__(self):
         return self.num_data
 
-    
+ 
 # def initial_network(args):
     
 #       # initilize the network here.
@@ -330,8 +335,10 @@ def train(args,dataloader,imdb_name,iters_per_epoch, fasterRCNN, optimizer):
                     fg_cnt = torch.sum(rois_label.data.ne(0))
                     bg_cnt = rois_label.data.numel() - fg_cnt
 
+
                 print("[epoch %2d][iter %4d/%4d] loss: %.4f, lr: %.2e" \
                       % (epoch, step, iters_per_epoch, loss_temp, lr))
+
                 print("\t\t\tfg/bg=(%d/%d), time cost: %f" % (fg_cnt, bg_cnt, end - start))
                 print("\t\t\trpn_cls: %.4f, rpn_box: %.4f, rcnn_cls: %.4f, rcnn_box %.4f" \
                       % (loss_rpn_cls, loss_rpn_box, loss_rcnn_cls, loss_rcnn_box))
@@ -339,10 +346,11 @@ def train(args,dataloader,imdb_name,iters_per_epoch, fasterRCNN, optimizer):
 
                 loss_temp = 0
                 start = time.time()
+
         #if epoch == args.max_epochs + 1 :
         save_name = os.path.join(output_dir, 'faster_rcnn_{}_{}_{}.pth'.format(imdb_name, epoch, step))
         save_checkpoint({
-         
+   
           'epoch': epoch + 1,
           'model': fasterRCNN.module.state_dict() if args.mGPUs else fasterRCNN.state_dict(),
           'optimizer': optimizer.state_dict(),
@@ -350,6 +358,7 @@ def train(args,dataloader,imdb_name,iters_per_epoch, fasterRCNN, optimizer):
           'class_agnostic': args.class_agnostic,
         }, save_name)
         print('save model: {}'.format(save_name))
+
         
             
         
@@ -394,10 +403,12 @@ def train(args,dataloader,imdb_name,iters_per_epoch, fasterRCNN, optimizer):
 #     return model,optimizer, start_round
 
 
+
     
 if __name__ == '__main__':
 
     args = parse_args()
+
     
     imdb_name = args.imdb_name
 
@@ -409,12 +420,15 @@ if __name__ == '__main__':
 
 
 
+
     output_dir = args.save_dir + "/" + args.net + "/" + args.dataset + "/" + args.save_sub_dir
+
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     
     
     dataloader,iters_per_epoch  = load_client_dataset(imdb_name)
+
     #dataloader = dataloader_list[0]
     print('# worker' + str(args.num_workers))
     # initilize the tensor holder here.
@@ -437,5 +451,4 @@ if __name__ == '__main__':
         
     train(args,dataloader,imdb_name,iters_per_epoch, fasterRCNN, optimizer)
         
-
 
