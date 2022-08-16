@@ -61,23 +61,23 @@ __general hyperparameters setting__
       
 experiment#     | train | test | AP | model
 ---------|--------|-----|--------|--------
-E1 | channel 2 | channel 2 | 89.08 |  [M1](https://superorange.cos.twcc.ai/MI3_model/M1_channel2/faster_rcnn_1_20_52.pth)
-E2 | channel 4 | channel 4 | 85.37 | [M2](https://superorange.cos.twcc.ai/MI3_model/M2_channel4/faster_rcnn_1_20_76.pth)
-E3 | channel 6 | channel 2 | 92.71 | [M3](https://superorange.cos.twcc.ai/MI3_model/M3_channel6/faster_rcnn_1_20_76.pth)
-E4 | all | all | 93.09 | [M4](https://superorange.cos.twcc.ai/MI3_model/M4_all/faster_rcnn_1_20_209.pth)
+E1 | channel 2 | channel 2 | 89.08 |  [M1](https://superorange.cos.twcc.ai/model/MI3_model/M1_channel2/faster_rcnn_1_20_52.pth)
+E2 | channel 4 | channel 4 | 85.37 | [M2](https://superorange.cos.twcc.ai/model/MI3_model/M2_channel4/faster_rcnn_1_20_76.pth)
+E3 | channel 6 | channel 2 | 92.71 | [M3](https://superorange.cos.twcc.ai/model/MI3_model/M3_channel6/faster_rcnn_1_20_76.pth)
+E4 | all | all | 93.09 | [M4](https://superorange.cos.twcc.ai/model/MI3_model/M4_all/faster_rcnn_1_20_209.pth)
 E5 | all | channel 2 | 90.63 |
 E6 | all | channel 4 | 94.7 |
 E7 | all | channel 6 | 95.05 | 
-E8 | merge 246 to RGB | merge 246 to RGB | 89.08 | [M5](https://superorange.cos.twcc.ai/MI3_model/M5_RGB/faster_rcnn_1_20_76.pth)
+E8 | merge 246 to RGB | merge 246 to RGB | 89.08 | [M5](https://superorange.cos.twcc.ai/model/MI3_model/M5_RGB/faster_rcnn_1_20_76.pth)
 
 experiment#     | train | test | AP | model
 ---------|--------|-----|--------|--------
-S1 | pathway, doorway | bus, room, staircase | 55.9 |  [S1](https://superorange.cos.twcc.ai/MI3_model/S1_bydataset/faster_rcnn_1_20_331.pth)
-S2 | pathway, bus, doorway, room | staircase | 86.14 | [S2](https://superorange.cos.twcc.ai/MI3_model/NoStaircase/faster_rcnn_1_20_467.pth)
-S3 | pathway, bus, doorway, staircase | room | 98.64 | [S3](https://superorange.cos.twcc.ai/MI3_model/NoRoom/faster_rcnn_1_20_529.pth)
-S4 | pathway, bus, room, staircase | doorway | 97.77 | [S4](https://superorange.cos.twcc.ai/MI3_model/NoDoorway/faster_rcnn_1_20_521.pth)
-S5 | pathway, doorway, room, staircase | bus | 99.5 | [S5](https://superorange.cos.twcc.ai/MI3_model/NoBus/faster_rcnn_1_20_453.pth)
-S6 | bus, doorway, room, staircase | pathway | 94.58 | [S6](https://superorange.cos.twcc.ai/MI3_model/NoPathway/faster_rcnn_1_20_265.pth)
+S1 | pathway, doorway | bus, room, staircase | 55.9 |  [S1](https://superorange.cos.twcc.ai/model/MI3_model/S1_bydataset/faster_rcnn_1_20_331.pth)
+S2 | pathway, bus, doorway, room | staircase | 86.14 | [S2](https://superorange.cos.twcc.ai/model/MI3_model/NoStaircase/faster_rcnn_1_20_467.pth)
+S3 | pathway, bus, doorway, staircase | room | 98.64 | [S3](https://superorange.cos.twcc.ai/model/MI3_model/NoRoom/faster_rcnn_1_20_529.pth)
+S4 | pathway, bus, room, staircase | doorway | 97.77 | [S4](https://superorange.cos.twcc.ai/model/MI3_model/NoDoorway/faster_rcnn_1_20_521.pth)
+S5 | pathway, doorway, room, staircase | bus | 99.5 | [S5](https://superorange.cos.twcc.ai/model/MI3_model/NoBus/faster_rcnn_1_20_453.pth)
+S6 | bus, doorway, room, staircase | pathway | 94.58 | [S6](https://superorange.cos.twcc.ai/model/MI3_model/NoPathway/faster_rcnn_1_20_265.pth)
 
 ## run
 ### train
